@@ -6,7 +6,7 @@ public class Admin {
     public String statusAkun;
 
     public void tampilkan(){
-        System.out.println("ID Admin   : " + idAdmin);
+        System.out.println("\nID Admin   : " + idAdmin);
         System.out.println("Nama       : " + nama);
         System.out.println("Username   : " + username);
         System.out.println("Password   : " + password);
@@ -35,8 +35,8 @@ class TestAdmin {
         Tindaklanjut TindakLanjut1 = new Tindaklanjut();
         Tindaklanjut TindakLanjut2 = new Tindaklanjut();
 
-        TindakLanjut1.melakukan("Laporan selesai", "foto");
-        TindakLanjut2.melakukan("Laporan selesai", "foto sungai");
+        TindakLanjut1.melakukan("Laporan selesai", "foto", Admin1.idAdmin);
+        TindakLanjut2.melakukan("Laporan selesai", "foto sungai", Admin2.idAdmin);
 
         Admin1.tampilkan();
         Admin2.tampilkan();
