@@ -1,6 +1,6 @@
 import java.time.LocalDate;
 
-public class laporan extends Masyarakat{
+public class laporan extends Masyarakat implements ILaporan, IPenolakLaporan {
         private int idLaporan;
         public static int maxidlaporan = 0;
         private LocalDate tanggalLaporan;
@@ -13,7 +13,8 @@ public class laporan extends Masyarakat{
         private enum enstatuslaporan{
             belum,
             sedang,
-            selesai
+            selesai,
+            ditolak
         };
         private enum entingkatPencemaran{
             ringan,
@@ -68,7 +69,7 @@ public class laporan extends Masyarakat{
 
     public void tampilLaporan() {
 
-        System.out.println("\nId Laporan : " + idLaporan);
+        System.out.println("Id Laporan : " + idLaporan);
         System.out.println("Id Masyarakat : " + idMasyarakat);
         System.out.println("Tanggal Laporan : " + tanggalLaporan);
         System.out.println("Deskripsi : " + deskripsi);
@@ -78,14 +79,11 @@ public class laporan extends Masyarakat{
         System.out.println("maxid : " + maxidlaporan);
         
     }
-
-    @Override
-    public void TampilkanProfil() {
-
-        System.out.println("DONEE");
-        
-    }
-
     
+    @Override
+    public void tolaklaporan() {
+        this.statuslaporan = enstatuslaporan.ditolak;
+        System.err.println("laporan ditolak");
+    }
 }
 
