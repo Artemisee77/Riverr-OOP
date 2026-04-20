@@ -1,116 +1,82 @@
-class Masyarakat {
-    private int idMasyarakat;
-    private String nama;
-    private String email;
-    private String alamat;
-    private Boolean statusAkun;
-    private String password;
-
-    public void setId(int idMasyarakat) {
-        this.idMasyarakat = idMasyarakat;
-    }
-
-    public int getId() {
-        return idMasyarakat;
-    }
-
-    public void setNama(String nama) {
-        this.nama = nama;
-    }
-
-    public String getNama() {
-        return nama;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setAlamat(String alamat) {
-        this.alamat = alamat;
-    }
-
-    public String getAlamat() {
-        return alamat;
-    }
-
-    public void setStatusAkun(Boolean statusAkun) {
-        this.statusAkun = statusAkun;
-    }
-
-    public Boolean getStatusAkun() {
-        return statusAkun;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void TampilkanProfil(){
-        System.out.println("\nId Masyarakat : " + idMasyarakat);
-        System.out.println("Nama : " + nama);
-        System.out.println("Email : " + email);
-        System.out.println("Alamat : " + alamat);
-        System.out.println("Status Akun : " + statusAkun);
-        System.out.println("Password : " + password);
-    }
-}
-
+// ============================================================
+// CLASS: Main
+// SOLID:
+//   D (Dependency Inversion) — Main bergantung pada interface
+//     (IMengajukanLaporan, ITampilLaporan, ITolakLaporan) dan
+//     Factory, bukan class konkret secara langsung.
+//     Jika implementasi berubah, Main tidak perlu diubah.
+// ============================================================
 public class Main {
     public static void main(String[] args) {
 
+        // --- Setup Data Masyarakat ---
+        // S: Masyarakat hanya mengurus profil pengguna
         Masyarakat masyarakat1 = new Masyarakat();
-        Masyarakat masyarakat2 = new Masyarakat();
-        Masyarakat masyarakat3 = new Masyarakat();
-
         masyarakat1.setId(1);
-        masyarakat1.setNama("budi");
-        masyarakat1.setEmail("budi@budi");
+        masyarakat1.setNama("Budi");
+        masyarakat1.setEmail("budi@budi.com");
         masyarakat1.setAlamat("Jl. Raya No. 123");
         masyarakat1.setStatusAkun(true);
         masyarakat1.setPassword("password123");
 
+        Masyarakat masyarakat2 = new Masyarakat();
         masyarakat2.setId(2);
-        masyarakat2.setNama("bangkit");
-        masyarakat2.setEmail("bangkit@");
-        masyarakat2.setAlamat("Jl. Raya No. 123");
+        masyarakat2.setNama("Bangkit");
+        masyarakat2.setEmail("bangkit@mail.com");
+        masyarakat2.setAlamat("Jl. Raya No. 456");
         masyarakat2.setStatusAkun(true);
         masyarakat2.setPassword("password123");
 
+        Masyarakat masyarakat3 = new Masyarakat();
         masyarakat3.setId(3);
-        masyarakat3.setNama("caca");
-        masyarakat3.setEmail("caca@caca");
-        masyarakat3.setAlamat("Jl. Raya No. 123");
+        masyarakat3.setNama("Caca");
+        masyarakat3.setEmail("caca@caca.com");
+        masyarakat3.setAlamat("Jl. Raya No. 789");
         masyarakat3.setStatusAkun(true);
         masyarakat3.setPassword("password123");
 
-    
-        //mengajukan laporan
-        ILaporan laporan1 = new laporan();
-        ILaporan laporan2 = new LaporanBanding();
-        IPenolakLaporan laporan3 = new laporan();
+        // D — Main bergantung pada LaporanFactory, bukan "new Laporan()" langsung
+        // D — tipe variabel adalah interface, bukan class konkret
+        IMengajukanLaporan laporan1 = LaporanFactory.buatLaporan();
+        IMengajukanLaporan laporan2 = LaporanFactory.buatLaporanBanding();
+        LaporanDitolak     laporan3 = LaporanFactory.buatLaporanDitolak();
 
+        // O — Gunakan enum, bukan String. Tidak ada risiko typo atau bug "=="
+        laporan1.mengajukan(
+            "Laporan Pencemaran Air",
+            JenisPencemaran.AIR,
+            StatusLaporan.SELESAI,
+            TingkatPencemaran.RINGAN,
+            masyarakat1.getId()
+        );
 
-        laporan1.mengajukan("Laporan Pencemaran Air", "air", "selesai", "ringan", masyarakat1.getId());
-        laporan2.mengajukan("Laporan Pencemaran Tanah", "tanah", "selesai", "sedang", masyarakat2.getId());
-        laporan3.mengajukan("Laporan Pencemaran Air", "air", "ditolak", "ringan", masyarakat3.getId());
+        laporan2.mengajukan(
+            "Laporan Pencemaran Tanah",
+            JenisPencemaran.TANAH,
+            StatusLaporan.SELESAI,
+            TingkatPencemaran.SEDANG,
+            masyarakat2.getId()
+        );
 
-        masyarakat1.TampilkanProfil();
-        laporan1.tampilLaporan();
+        laporan3.mengajukan(
+            "Laporan Pencemaran Air",
+            JenisPencemaran.AIR,
+            StatusLaporan.BELUM,
+            TingkatPencemaran.RINGAN,
+            masyarakat3.getId()
+        );
 
-        masyarakat2.TampilkanProfil();
-        laporan2.tampilLaporan();
+        // --- Tampil Laporan 1 ---
+        masyarakat1.tampilkanProfil();
+        ((ITampilLaporan) laporan1).tampilLaporan(); //  D — cast ke interface
 
-        masyarakat3.TampilkanProfil();
-        laporan3.tolaklaporan();
-        laporan3.tampilLaporan();
+        // --- Tampil Laporan 2 ---
+        masyarakat2.tampilkanProfil();
+        ((ITampilLaporan) laporan2).tampilLaporan();
+
+        // --- Tolak dan tampil Laporan 3 ---
+        masyarakat3.tampilkanProfil();
+        laporan3.tolakLaporan("Data tidak lengkap");  // I — method tolak hanya ada di ITolakLaporan
+        laporan3.tampilLaporan();                      // L — LaporanDitolak tetap bisa tampilLaporan
     }
 }

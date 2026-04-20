@@ -1,4 +1,4 @@
-package Edukasi;
+
 
 class Masyarakat {
     public String idMasyarakat;
