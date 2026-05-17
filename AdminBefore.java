@@ -6,18 +6,18 @@ public class AdminBefore {
     public static void main(String[] args) {
 
         Admin admin1 = new Admin();
-        admin1.idAdmin = "A001";
-        admin1.nama = "Aisyah";
-        admin1.username = "aisyah_admin";
-        admin1.password = "12345";
-        admin1.statusAkun = "Aktif";
+        admin1.setIdAdmin("A001");
+        admin1.setNama("Aisyah");
+        admin1.setUsername("aisyah_admin");
+        admin1.setPassword("12345");
+        admin1.setStatusAkun("Aktif");
 
         Admin admin2 = new Admin();
-        admin2.idAdmin = "A002";
-        admin2.nama = "Dilla";
-        admin2.username = "dilla_admin";
-        admin2.password = "67890";
-        admin2.statusAkun = "Tidak Aktif";
+        admin2.setIdAdmin("A002");
+        admin2.setNama("Dilla");
+        admin2.setUsername("dilla_admin");
+        admin2.setPassword("67890");
+        admin2.setStatusAkun("Tidak Aktif");
 
         Tindaklanjut tl1 = new Tindaklanjut();
         Tindaklanjut tl2 = new Tindaklanjut();
@@ -26,15 +26,19 @@ public class AdminBefore {
         // BUG 1: melakukan() dipanggil dengan detail = null
         // Tidak ada validasi → data null masuk ke sistem tanpa peringatan
         // ============================================================
-        tl1.melakukan(null, "foto", admin1.idAdmin); // <-- detail null
+        tl1.melakukan(null, "foto", admin1); // <-- detail null, tidak dicegah!
 
         // ============================================================
-        // BUG 2: tampilkan() dipanggil sebelum melakukan()
+        // BUG 2: getDetailTindakLanjut() dipanggil sebelum melakukan()
         // Semua field masih null → output tidak valid
         // ============================================================
-        tl2.tampilkan(); // <-- dipanggil sebelum melakukan()!
+        System.out.println("Detail: " + tl2.getDetailTindakLanjut()); // <-- null!
+        System.out.println("Bukti: " + tl2.getBukti()); // <-- null!
+        System.out.println("Admin: " + tl2.getAdminEksekutor()); // <-- null!
 
-        admin1.tampilkan();
-        tl1.tampilkan();
+        System.out.println("\n=== Tindak Lanjut 1 ===");
+        System.out.println("Detail: " + tl1.getDetailTindakLanjut());
+        System.out.println("Bukti: " + tl1.getBukti());
+        System.out.println("Admin: " + tl1.getAdminEksekutor().getid());
     }
 }

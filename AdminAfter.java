@@ -5,18 +5,18 @@ public class AdminAfter {
     public static void main(String[] args) {
 
         Admin admin1 = new Admin();
-        admin1.idAdmin = "A001";
-        admin1.nama = "Aisyah";
-        admin1.username = "aisyah_admin";
-        admin1.password = "12345";
-        admin1.statusAkun = "Aktif";
+        admin1.setIdAdmin("A001");
+        admin1.setNama("Aisyah");
+        admin1.setUsername("aisyah_admin");
+        admin1.setPassword("12345");
+        admin1.setStatusAkun("Aktif");
 
         Admin admin2 = new Admin();
-        admin2.idAdmin = "A002";
-        admin2.nama = "Dilla";
-        admin2.username = "dilla_admin";
-        admin2.password = "67890";
-        admin2.statusAkun = "Tidak Aktif";
+        admin2.setIdAdmin("A002");
+        admin2.setNama("Dilla");
+        admin2.setUsername("dilla_admin");
+        admin2.setPassword("67890");
+        admin2.setStatusAkun("Tidak Aktif");
 
         Tindaklanjut tl1 = new Tindaklanjut();
         Tindaklanjut tl2 = new Tindaklanjut();
@@ -25,16 +25,11 @@ public class AdminAfter {
         // FIX BUG 1: Validasi input sebelum melakukan()
         // ============================================================
         try {
-            if (admin1.idAdmin == null || admin1.idAdmin.isBlank()) {
-                throw new IllegalArgumentException("ID Admin tidak boleh kosong.");
-            }
-            if (tl1.getSudahMelakukan()) {
-                throw new IllegalStateException("Tindak lanjut sudah pernah dilakukan.");
-            }
-            tl1.melakukan(null, "foto", admin1.idAdmin);
-            if (tl1.getDetailTindakLanjut() == null) {
+            String detail = null;
+            if (detail == null || detail.isBlank()) {
                 throw new IllegalArgumentException("Detail tindak lanjut tidak boleh kosong.");
             }
+            tl1.melakukan(detail, "foto", admin1);
         } catch (IllegalArgumentException e) {
             System.out.println("[ERROR] Validasi gagal: " + e.getMessage());
         } finally {
@@ -42,20 +37,22 @@ public class AdminAfter {
         }
 
         // ============================================================
-        // FIX BUG 2: Cek state sebelum tampilkan()
+        // FIX BUG 2: Cek state sebelum akses data
         // ============================================================
         try {
-            if (!tl2.getSudahMelakukan()) {
+            if (tl2.getIdTindakLanjut() == 0) {
                 throw new IllegalStateException("Tindak lanjut belum dilakukan, tidak bisa ditampilkan.");
             }
-            tl2.tampilkan();
+            System.out.println("Detail: " + tl2.getDetailTindakLanjut());
+            System.out.println("Bukti: " + tl2.getBukti());
         } catch (IllegalStateException e) {
             System.out.println("[ERROR] " + e.getMessage());
         } finally {
             System.out.println("[LOG] Proses tampil tindak lanjut 2 selesai.");
         }
 
-        admin1.tampilkan();
-        tl1.tampilkan();
+        System.out.println("\n=== Tindak Lanjut 1 ===");
+        System.out.println("Detail: " + tl1.getDetailTindakLanjut());
+        System.out.println("Bukti: " + tl1.getBukti());
     }
 }
