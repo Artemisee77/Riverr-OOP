@@ -1,13 +1,8 @@
 import java.util.Scanner;
 
-// ============================================================
-// VERSI BEFORE — Sengaja dibuat bisa crash untuk keperluan
-// Bug Hunting & Simulasi Error (Tahap 1 & 2 Praktikum)
-// ============================================================
-public class MainBefore {
+public class MainAfter {
     public static void main(String[] args) {
 
-        // --- Setup Data Masyarakat ---
         Masyarakat masyarakat1 = new Masyarakat();
         masyarakat1.setId(1);
         masyarakat1.setNama("Budi");
@@ -32,18 +27,27 @@ public class MainBefore {
         masyarakat3.setStatusAkun(true);
         masyarakat3.setPassword("password123");
 
-        IMengajukanLaporan laporan1 = LaporanFactory.buatLaporanDitolak();
+        IMengajukanLaporan laporan1 = LaporanFactory.buatLaporan();
         IMengajukanLaporan laporan2 = LaporanFactory.buatLaporanBanding();
-        LaporanDitolak     laporan3 = LaporanFactory.buatLaporanDitolak();
+        LaporanDitolak laporan3 = LaporanFactory.buatLaporanDitolak();
 
         // ============================================================
-        // BUG 1: Input ID dari user, langsung parseInt tanpa validasi
-        // Jika user ketik "abc" → NumberFormatException → CRASH
+        // FIX BUG 1: try-catch NumberFormatException
         // ============================================================
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Masukkan ID Masyarakat (angka): ");
-        String inputId = scanner.nextLine();
-        int idInput = Integer.parseInt(inputId); // <-- CRASH di sini jika bukan angka
+        int idInput = masyarakat1.getId(); // default fallback
+
+        try {
+            System.out.print("Masukkan ID Masyarakat (angka): ");
+            String inputId = scanner.nextLine();
+            idInput = Integer.parseInt(inputId); // dicoba parse
+            System.out.println("[INFO] ID valid: " + idInput);
+        } catch (NumberFormatException e) {
+            System.out.println("[ERROR] Input harus berupa angka! Menggunakan ID default: " + idInput);
+        } finally {
+            System.out.println("[LOG] Proses input ID selesai.");
+        }
+
         scanner.close();
 
         laporan1.mengajukan(
@@ -71,14 +75,33 @@ public class MainBefore {
         );
 
         // ============================================================
-        // BUG 2: Cast langsung ke ITampilLaporan tanpa cek instanceof
-        // Jika objek tidak implement ITampilLaporan → ClassCastException → CRASH
+        // FIX BUG 2: try-catch ClassCastException + instanceof check
         // ============================================================
         masyarakat1.tampilkanProfil();
-        String objSalah = "bukan laporan";
-        ((ITampilLaporan)(Object) objSalah).tampilLaporan(); // <-- CRASH ClassCastException
+        try {
+            if (laporan1 instanceof ITampilLaporan) {
+                ((ITampilLaporan) laporan1).tampilLaporan();
+            } else {
+                throw new ClassCastException("Objek tidak mengimplementasikan ITampilLaporan");
+            }
+        } catch (ClassCastException e) {
+            System.out.println("[ERROR] Gagal menampilkan laporan: " + e.getMessage());
+        } finally {
+            System.out.println("[LOG] Proses tampil laporan 1 selesai.");
+        }
+
         masyarakat2.tampilkanProfil();
-        ((ITampilLaporan) laporan2).tampilLaporan(); // <-- CRASH jika tidak implement
+        try {
+            if (laporan2 instanceof ITampilLaporan) {
+                ((ITampilLaporan) laporan2).tampilLaporan();
+            } else {
+                throw new ClassCastException("Objek tidak mengimplementasikan ITampilLaporan");
+            }
+        } catch (ClassCastException e) {
+            System.out.println("[ERROR] Gagal menampilkan laporan: " + e.getMessage());
+        } finally {
+            System.out.println("[LOG] Proses tampil laporan 2 selesai.");
+        }
 
         masyarakat3.tampilkanProfil();
         laporan3.tolakLaporan("Data tidak lengkap");

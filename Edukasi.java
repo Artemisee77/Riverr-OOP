@@ -1,15 +1,3 @@
-
-
-class Masyarakat {
-    public String idMasyarakat;
-    public String nama;
-
-    public Masyarakat(String id, String nama) {
-        this.idMasyarakat = id;
-        this.nama = nama;
-    }
-}
-
 class DataEdukasi {
     public String idEdukasi;
     public String judul;
@@ -30,7 +18,7 @@ class EdukasiLingkungan extends DataEdukasi {
         infoDasar(); 
         System.out.println("Isi Pesan       : " + isiPesan);
         System.out.println("Dampak Positif  : " + dampak);
-        System.out.println("Target Penerima : " + m.nama + " (" + m.idMasyarakat + ")");
+        System.out.println("Target Penerima : " + m.getNama() + " (" + m.getId() + ")");
         System.out.println("Tanggal Kirim   : " + tanggalKirim);
         System.out.println("Admin Pengirim  : " + idAdmin);
     }
@@ -39,7 +27,10 @@ class EdukasiLingkungan extends DataEdukasi {
 public class Edukasi {
     public static void main(String[] args) {
         
-        Masyarakat warga = new Masyarakat("M009", "Budi Santoso");
+        Masyarakat warga = new Masyarakat();
+        warga.setId(9);
+        warga.setNama("Budi Santoso");
+
         EdukasiLingkungan eduLingkungan = new EdukasiLingkungan();
         
         eduLingkungan.idEdukasi = "EDS08";
