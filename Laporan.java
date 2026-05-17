@@ -1,25 +1,5 @@
 import java.time.LocalDate;
 
-// ============================================================
-// CLASS: Laporan
-// Tujuan: Menyimpan data dan logika laporan pencemaran biasa.
-// SOLID:
-//   S (Single Responsibility) — class ini HANYA mengurus
-//     data laporan. Tidak extend Masyarakat, tidak tolak
-//     laporan. Satu class, satu tanggung jawab.
-//
-//   O (Open/Closed) — menggunakan enum langsung sebagai
-//     parameter (JenisPencemaran, StatusLaporan, dll).
-//     Tidak ada if-else String. Menambah jenis baru cukup
-//     tambah nilai di enum, class ini tidak perlu disentuh.
-//
-//   L (Liskov Substitution) — class ini tidak lagi extend
-//     Masyarakat secara tidak tepat. LaporanDitolak bisa
-//     menggantikan Laporan dengan aman (lihat LaporanDitolak).
-//
-//   D (Dependency Inversion) — bergantung pada interface
-//     IMengajukanLaporan & ITampilLaporan, bukan class konkret.
-// ============================================================
 public class Laporan implements IMengajukanLaporan, ITampilLaporan {
 
     private int idLaporan;
@@ -32,23 +12,29 @@ public class Laporan implements IMengajukanLaporan, ITampilLaporan {
     private StatusLaporan statusLaporan;
     private TingkatPencemaran tingkatPencemaran;
 
-    // O — Pakai enum langsung, tidak ada if-else String lagi.
-    //        Tidak perlu khawatir bug "==" vs ".equals()" untuk String.
     @Override
     public void mengajukan(
             String deskripsi,
             JenisPencemaran jenis,
             StatusLaporan status,
             TingkatPencemaran tingkat,
-            int idMasyarakat) {
+            int idMasyarakat) throws ValidasiLaporanException {
+
+        if (deskripsi == null || deskripsi.trim().isEmpty()) {
+            throw new ValidasiLaporanException("Gagal Mengajukan: Deskripsi laporan tidak boleh kosong!");
+        }
+
+        if (idMasyarakat <= 0) {
+            throw new ValidasiLaporanException("Gagal Mengajukan: ID Masyarakat tidak valid (harus > 0)!");
+        }
 
         maxIdLaporan++;
-        this.idLaporan       = maxIdLaporan;
-        this.idMasyarakat    = idMasyarakat;
-        this.tanggalLaporan  = LocalDate.now();
-        this.deskripsi       = deskripsi;
-        this.jenisPencemaran = jenis;   //  langsung assign, no if-else
-        this.statusLaporan   = status;
+        this.idLaporan = maxIdLaporan;
+        this.idMasyarakat = idMasyarakat;
+        this.tanggalLaporan = LocalDate.now();
+        this.deskripsi = deskripsi;
+        this.jenisPencemaran = jenis;
+        this.statusLaporan = status;
         this.tingkatPencemaran = tingkat;
     }
 
@@ -66,13 +52,33 @@ public class Laporan implements IMengajukanLaporan, ITampilLaporan {
     }
 
     // Getter untuk subclass
-    protected int getIdLaporan()              { return idLaporan; }
-    protected int getIdMasyarakat()           { return idMasyarakat; }
-    protected LocalDate getTanggalLaporan()   { return tanggalLaporan; }
-    protected String getDeskripsi()           { return deskripsi; }
-    protected JenisPencemaran getJenis()      { return jenisPencemaran; }
-    protected StatusLaporan getStatus()       { return statusLaporan; }
-    protected TingkatPencemaran getTingkat()  { return tingkatPencemaran; }
+    protected int getIdLaporan() {
+        return idLaporan;
+    }
+
+    protected int getIdMasyarakat() {
+        return idMasyarakat;
+    }
+
+    protected LocalDate getTanggalLaporan() {
+        return tanggalLaporan;
+    }
+
+    protected String getDeskripsi() {
+        return deskripsi;
+    }
+
+    protected JenisPencemaran getJenis() {
+        return jenisPencemaran;
+    }
+
+    protected StatusLaporan getStatus() {
+        return statusLaporan;
+    }
+
+    protected TingkatPencemaran getTingkat() {
+        return tingkatPencemaran;
+    }
 
     // Setter status untuk dipakai subclass
     protected void setStatusLaporan(StatusLaporan status) {

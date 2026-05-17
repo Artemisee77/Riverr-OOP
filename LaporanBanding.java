@@ -1,21 +1,5 @@
 import java.time.LocalDate;
 
-// ============================================================
-// CLASS: LaporanBanding
-// Tujuan: Laporan banding — jenis laporan yang berbeda
-//         dari laporan biasa.
-// SOLID:
-//   S (Single Responsibility) — hanya mengurus data laporan
-//     banding. Tidak mengurus profil pengguna.
-//
-//   O (Open/Closed) — pakai enum, tidak ada if-else String.
-//
-//   I (Interface Segregation) — implement interface yang
-//     sesuai kebutuhannya saja.
-//
-//   D (Dependency Inversion) — bergantung pada interface
-//     (IMengajukanLaporan, ITampilLaporan), bukan class konkret.
-// ============================================================
 public class LaporanBanding implements IMengajukanLaporan, ITampilLaporan {
 
     private int idLaporanBanding;
@@ -26,21 +10,28 @@ public class LaporanBanding implements IMengajukanLaporan, ITampilLaporan {
     private StatusLaporan statusLaporan;
     private TingkatPencemaran tingkatPencemaran;
 
-    // O — enum sebagai parameter, bukan String + if-else
     @Override
     public void mengajukan(
             String deskripsi,
             JenisPencemaran jenis,
             StatusLaporan status,
             TingkatPencemaran tingkat,
-            int idMasyarakat) {
+            int idMasyarakat) throws ValidasiLaporanException {
 
-        this.idLaporanBanding = 1; // bisa dibuat auto-increment serupa Laporan
-        this.idMasyarakat     = idMasyarakat;
-        this.tanggalLaporan   = LocalDate.now();
-        this.deskripsi        = deskripsi;
-        this.jenisPencemaran  = jenis;
-        this.statusLaporan    = status;
+        if (deskripsi == null || deskripsi.trim().isEmpty()) {
+            throw new ValidasiLaporanException("Gagal Mengajukan: Deskripsi laporan tidak boleh kosong!");
+        }
+
+        if (idMasyarakat <= 0) {
+            throw new ValidasiLaporanException("Gagal Mengajukan: ID Masyarakat tidak valid (harus > 0)!");
+        }
+
+        this.idLaporanBanding = 1;
+        this.idMasyarakat = idMasyarakat;
+        this.tanggalLaporan = LocalDate.now();
+        this.deskripsi = deskripsi;
+        this.jenisPencemaran = jenis;
+        this.statusLaporan = status;
         this.tingkatPencemaran = tingkat;
     }
 
