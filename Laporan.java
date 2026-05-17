@@ -42,14 +42,29 @@ public class Laporan implements IMengajukanLaporan, ITampilLaporan {
             TingkatPencemaran tingkat,
             int idMasyarakat) {
 
+        // ✅ VALIDASI DATA TERPUSAT — Tahap 4
+        if (deskripsi == null || deskripsi.isBlank()) {
+            System.out.println("[VALIDASI] Gagal: Deskripsi tidak boleh kosong.");
+            return;
+        }
+        if (idMasyarakat <= 0) {
+            System.out.println("[VALIDASI] Gagal: ID masyarakat tidak valid.");
+            return;
+        }
+        if (jenis == null) {
+            System.out.println("[VALIDASI] Gagal: Jenis pencemaran tidak boleh kosong.");
+            return;
+        }
+
         maxIdLaporan++;
         this.idLaporan       = maxIdLaporan;
         this.idMasyarakat    = idMasyarakat;
         this.tanggalLaporan  = LocalDate.now();
         this.deskripsi       = deskripsi;
-        this.jenisPencemaran = jenis;   //  langsung assign, no if-else
+        this.jenisPencemaran = jenis;
         this.statusLaporan   = status;
         this.tingkatPencemaran = tingkat;
+        System.out.println("[INFO] Laporan berhasil diajukan.");
     }
 
     @Override
